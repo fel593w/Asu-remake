@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Modedlus.Math/0.0.7": {
+        "runtime": {
+          "Modedlus.Math.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Modedlus.Math/0.0.7": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

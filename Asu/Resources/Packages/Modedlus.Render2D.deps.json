@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Modedlus.Render2D/0.0.7": {
+        "runtime": {
+          "Modedlus.Render2D.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Modedlus.Render2D/0.0.7": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

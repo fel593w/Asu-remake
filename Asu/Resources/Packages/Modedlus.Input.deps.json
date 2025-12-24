@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Modedlus.Input/0.0.7": {
+        "runtime": {
+          "Modedlus.Input.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Modedlus.Input/0.0.7": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

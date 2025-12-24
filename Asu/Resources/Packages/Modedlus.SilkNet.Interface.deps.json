@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Modedlus.SilkNet.Interface/0.0.7": {
+        "runtime": {
+          "Modedlus.SilkNet.Interface.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Modedlus.SilkNet.Interface/0.0.7": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
