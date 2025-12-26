@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v10.0": {
-      "Modedlus.Multiplayer/0.0.7": {
+      "Modedlus.Multiplayer/0.0.8": {
         "runtime": {
           "Modedlus.Multiplayer.dll": {}
         }
@@ -14,7 +14,7 @@
     }
   },
   "libraries": {
-    "Modedlus.Multiplayer/0.0.7": {
+    "Modedlus.Multiplayer/0.0.8": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

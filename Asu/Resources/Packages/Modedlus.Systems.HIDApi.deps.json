@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v10.0": {
-      "Modedlus.Systems.HIDApi/0.0.8": {
+      "Modedlus.Systems.HIDApi/0.0.9": {
         "runtime": {
           "Modedlus.Systems.HIDApi.dll": {}
         }
@@ -14,7 +14,7 @@
     }
   },
   "libraries": {
-    "Modedlus.Systems.HIDApi/0.0.8": {
+    "Modedlus.Systems.HIDApi/0.0.9": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

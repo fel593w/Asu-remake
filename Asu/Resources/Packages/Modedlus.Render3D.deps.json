@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v10.0": {
-      "Modedlus.Render3D/0.0.7": {
+      "Modedlus.Render3D/0.0.8": {
         "runtime": {
           "Modedlus.Render3D.dll": {}
         }
@@ -14,7 +14,7 @@
     }
   },
   "libraries": {
-    "Modedlus.Render3D/0.0.7": {
+    "Modedlus.Render3D/0.0.8": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Asu.Piano.Input/0.0.8": {
+        "runtime": {
+          "Asu.Piano.Input.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Asu.Piano.Input/0.0.8": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

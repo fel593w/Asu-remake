@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v10.0": {
-      "Modedlus.Rendering/0.0.8": {
+      "Modedlus.Rendering/0.0.9": {
         "runtime": {
           "Modedlus.Rendering.dll": {}
         }
@@ -14,7 +14,7 @@
     }
   },
   "libraries": {
-    "Modedlus.Rendering/0.0.8": {
+    "Modedlus.Rendering/0.0.9": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
