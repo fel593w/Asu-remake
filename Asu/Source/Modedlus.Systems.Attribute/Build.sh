@@ -7,6 +7,7 @@ echo "Updating version"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 
+
 FILE=$(find . -maxdepth 1 -name "*.csproj" | head -n 1)
 
 echo "csproj file: $FILE"

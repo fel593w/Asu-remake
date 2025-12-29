@@ -7,4 +7,8 @@
 	  <VersionPrefix>0.0.8</VersionPrefix>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="./../Modedlus.Cli/Modedlus.Cli.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v10.0": {
-      "Asu/0.0.43": {
+      "Asu/0.0.97": {
         "dependencies": {
           "Asu.Piano": "0.0.9",
           "Modedlus.Systems.WindowInterface": "0.0.8",
@@ -690,6 +690,45 @@
           }
         }
       },
+      "Modedlus.Cli/0.0.8": {
+        "runtime": {
+          "Modedlus.Cli.dll": {
+            "assemblyVersion": "0.0.8.0",
+            "fileVersion": "0.0.8.0"
+          }
+        }
+      },
+      "Modedlus.Math3D/0.0.10": {
+        "dependencies": {
+          "Modedlus.Cli": "0.0.8"
+        },
+        "runtime": {
+          "Modedlus.Math3D.dll": {
+            "assemblyVersion": "0.0.10.0",
+            "fileVersion": "0.0.10.0"
+          }
+        }
+      },
+      "Modedlus.Systems.LoopSystems/0.0.8": {
+        "runtime": {
+          "Modedlus.Systems.LoopSystems.dll": {
+            "assemblyVersion": "0.0.8.0",
+            "fileVersion": "0.0.8.0"
+          }
+        }
+      },
+      "Modedlus.Systems.RenderInterface/0.0.8": {
+        "dependencies": {
+          "Modedlus.Math3D": "0.0.10",
+          "Modedlus.Systems.LoopSystems": "0.0.8"
+        },
+        "runtime": {
+          "Modedlus.Systems.RenderInterface.dll": {
+            "assemblyVersion": "0.0.8.0",
+            "fileVersion": "0.0.8.0"
+          }
+        }
+      },
       "Modedlus.Systems.WindowInterface/0.0.8": {
         "runtime": {
           "Modedlus.Systems.WindowInterface.dll": {
@@ -700,6 +739,7 @@
       },
       "Silk.Net.Interface/0.0.10": {
         "dependencies": {
+          "Modedlus.Systems.RenderInterface": "0.0.8",
           "Modedlus.Systems.WindowInterface": "0.0.8",
           "Silk.NET.Assimp": "2.22.0",
           "Silk.NET.DXGI": "2.22.0",
@@ -737,7 +777,7 @@
     }
   },
   "libraries": {
-    "Asu/0.0.43": {
+    "Asu/0.0.97": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -1030,6 +1070,26 @@
       "hashPath": "ultz.native.glfw.3.4.0.nupkg.sha512"
     },
     "Asu.Piano/0.0.9": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Modedlus.Cli/0.0.8": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Modedlus.Math3D/0.0.10": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Modedlus.Systems.LoopSystems/0.0.8": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Modedlus.Systems.RenderInterface/0.0.8": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
