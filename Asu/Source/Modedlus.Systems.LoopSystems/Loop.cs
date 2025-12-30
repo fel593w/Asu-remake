@@ -2,7 +2,7 @@ namespace Modedlus.Systems.LoopSystems;
 
 public interface Loop
 {
-    public EventHandler<LoopEventArgs> OnLoop { get; set; }
+    public event EventHandler<LoopEventArgs> OnLoop;
 }
 
 public class LoopEventArgs : EventArgs

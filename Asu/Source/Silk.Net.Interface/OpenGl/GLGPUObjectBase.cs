@@ -4,6 +4,6 @@ namespace Silk.Net.Interface.OpenGl;
 
 public abstract class GLGPUObjectBase
 {
-    public GL OpenGL => Interface.OpenGL;
-    public OpenGLRenderInterface Interface;
+    public GL OpenGL => GLInterface.OpenGL;
+    public OpenGLRenderInterface GLInterface;
 }

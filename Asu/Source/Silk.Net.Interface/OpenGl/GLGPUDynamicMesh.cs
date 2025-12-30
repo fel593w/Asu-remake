@@ -12,6 +12,14 @@ public class GLGPUDynamicMesh : GLGPUComonMeshObject, GPUDynamicMesh, GPUMesh
         // Update the GPU mesh data with the new mesh data
         //this.source = mesh;
         // Additional logic to update the GPU buffers would go here
+        throw new NotImplementedException();
     }
+
+    public GLGPUDynamicMesh(OpenGLRenderInterface GLInterface, Mesh mesh)
+    {
+        throw new NotImplementedException();
+        this.GLInterface = GLInterface;
+    }
+
 
 }

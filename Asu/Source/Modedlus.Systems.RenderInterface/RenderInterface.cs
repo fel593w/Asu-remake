@@ -6,17 +6,15 @@ public interface RenderInterface
 {
     public Loop RenderLoop { get; set; }
 
-    public unsafe uint LoadTexture(Texture image, TextureProperties properties);
-    public unsafe void UnLoadTexture(uint textureId);
-    public unsafe void SetActiveTexture(uint textureId, uint slot);
+    public GPUTexture LoadTexture(Texture image, TextureProperties properties);
+    public void UnLoadTexture(GPUTexture textureId);
 
-    public unsafe uint LoadShaderProgram(Shader shader);
-    public unsafe void UnLoadShaderProgram(uint shaderProgramId);
-    public unsafe void SetActiveShaderProgram(uint shaderProgramId);
+    public GPUShader LoadShaderProgram(Shader shader);
+    public void UnLoadShaderProgram(GPUShader shaderProgramId);
 
-    public unsafe uint LoadMesh(Mesh mesh);
-    public unsafe void UnLoadMesh(uint meshId);
-    public unsafe void DrawMesh(uint meshId);
+    public GPUMesh LoadMesh(Mesh mesh);
+    public void UnLoadMesh(GPUMesh meshId);
 
-
+    public void BindPropetes(GPUShader shader, params GPUTexture[] texture);
+    public void DrawMesh(GPUMesh mesh);
 }

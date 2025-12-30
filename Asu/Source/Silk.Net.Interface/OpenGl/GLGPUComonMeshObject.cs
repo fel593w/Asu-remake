@@ -31,15 +31,17 @@ public abstract class GLGPUComonMeshObject : GLGPUObjectBase, IDisposable
 
     public void Dispose()
     {
+        lock (this) {
+
         #region checks
 
         if(disposed)
             return;
 
-        if(Interface == null)
+        if(GLInterface is not null)
             return;
 
-        if(OpenGL == null)
+        if(OpenGL is not null)
             return;
 
         #endregion
@@ -68,7 +70,7 @@ public abstract class GLGPUComonMeshObject : GLGPUObjectBase, IDisposable
         }
 
         #endregion
-
+        }
     }
 
     #endregion

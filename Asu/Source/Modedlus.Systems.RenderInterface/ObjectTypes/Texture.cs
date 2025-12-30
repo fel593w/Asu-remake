@@ -1,9 +1,10 @@
 namespace Modedlus.Systems.RenderInterface;
 
-public interface Texture
+public class Texture
 {
-    public byte[] PixelData { get; set; }
-    public int Width { get; }
-    public int Height { get; }
+    public byte[] FileData { get; set; }
+    // public byte[] PixelData { get; set; }
+    // public int Width { get; }
+    // public int Height { get; }
 
 }

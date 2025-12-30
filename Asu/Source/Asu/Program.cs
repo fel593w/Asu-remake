@@ -1,11 +1,13 @@
-﻿using Modedlus.Systems.WindowInterface;
+﻿using System.Globalization;
+using System.Numerics;
+using System.Reflection;
+using Asu;
+using Modedlus.Systems.LoopSystems;
+using Modedlus.Systems.RenderInterface;
+using Modedlus.Systems.WindowInterface;
 using Silk.Net.Interface;
 
 // See https://aka.ms/new-console-template for more information
 Console.WriteLine("Hello, World!");
 
-Window windowA = new SilkWindow(800, 600, WindowAPI.OpenGL);
-windowA.Width = 1280;
-windowA.Height = 720;
-windowA.Title = "Åsu!!";
-windowA.FrameRate = 120;
+BootLoader.Boot();

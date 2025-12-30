@@ -2,7 +2,7 @@ namespace Modedlus.Systems.LoopSystems;
 
 public class TickLoop : Loop
 {
-    public EventHandler<LoopEventArgs> OnLoop { get; set; }
+    public event EventHandler<LoopEventArgs> OnLoop;
 
     public float TickRate { get { return 1.0f / TickInterval; } set { TickInterval = 1.0f / value; } }
     public float TickInterval = 0.02f;
