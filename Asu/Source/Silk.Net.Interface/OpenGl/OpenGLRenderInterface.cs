@@ -16,13 +16,13 @@ public class OpenGLRenderInterface :SilkRenderInterface, RenderInterface
     public void UnLoadTexture(GPUTexture textureId) => ((GLGPUTexture)textureId).Dispose();
 
 
-    public GPUShader LoadShaderProgram(Modedlus.Systems.RenderInterface.Shader shader) => new GLGPUShader(this, shader);
-    public void UnLoadShaderProgram(GPUShader shaderProgramId) => ((GLGPUShader)shaderProgramId).Dispose();
+    public GPUProgram LoadShaderProgram(Modedlus.Systems.RenderInterface.Shader shader) => new GLGPUProgram(this, shader);
+    public void UnLoadShaderProgram(GPUProgram shaderProgramId) => ((GLGPUProgram)shaderProgramId).Dispose();
 
     public GPUMesh LoadMesh(Mesh mesh) => new GLGPUMesh(this, mesh);
     public void UnLoadMesh(GPUMesh meshId) => ((GLGPUMesh)meshId).Dispose();
 
-    public void BindPropetes(GPUShader shader, GPUTexture[] textures) {try { _bindPropetes(shader, textures); } catch (Exception e) { Console.WriteLine(e); _bindErrorPropetes(); } }
+    public void BindProgram(GPUProgram program) {try { _bindProgram(program); } catch (Exception e) { Console.WriteLine(e); _bindErrorProgram(); } }
     public void DrawMesh(GPUMesh mesh) => _drawMesh(mesh);
     public GL OpenGL;
 
@@ -35,17 +35,27 @@ public class OpenGLRenderInterface :SilkRenderInterface, RenderInterface
         // Setup OpenGL
         OpenGL = iwindow.CreateOpenGL();
 
+        OpenGL.Enable(EnableCap.CullFace);
+        OpenGL.CullFace(GLEnum.Front);
+        OpenGL.Enable(EnableCap.Blend);
+        OpenGL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+        OpenGL.Enable(EnableCap.DepthTest);
+        OpenGL.DepthFunc(DepthFunction.Less);
+        OpenGL.DepthRange(0.0, 1.0);
+
         // Adds the render update function
         iwindow.Render += Render;
     }
 
     private void Render(double DeltaTime)
     {
+        // TEMPORARY
         OpenGL.ClearColor(Color.CornflowerBlue);
-        OpenGL.Enable(EnableCap.CullFace);
-        OpenGL.CullFace(GLEnum.Back);
-        OpenGL.Enable(EnableCap.Blend);
-        OpenGL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+        OpenGL.Clear(ClearBufferMask.ColorBufferBit);
+        OpenGL.ClearColor(Color.Black);
+        OpenGL.Clear(ClearBufferMask.DepthBufferBit);
+        //OpenGL.Clear(ClearBufferMask.DepthBufferBit);
+
         // Runs the render loop
         if(RenderLoop?.GetType() == typeof(RenderLoop)) 
             ((RenderLoop)RenderLoop).Invoke(new LoopEventArgs { DeltaTime = (float)DeltaTime });
@@ -53,24 +63,22 @@ public class OpenGLRenderInterface :SilkRenderInterface, RenderInterface
 
     #region functions
 
-    private unsafe void _bindErrorPropetes()
+    private unsafe void _bindErrorProgram()
     {
         Console.WriteLine("Binding Error");
         throw new Exception();
     }
 
-    private unsafe void _bindPropetes (GPUShader shader, GPUTexture[] textures)
+    private unsafe void _bindProgram (GPUProgram program)
     {
-        // shader binding
-        OpenGL.UseProgram(((GLGPUShader)shader).ProgramID);
-
-        if(textures is null)
-            return;
-
-        for (int i = 0; i < textures.Length; i++)
+        if(program is not GLGPUProgram)
         {
-            ((GLGPUTexture)textures[i]).Bind(TextureUnit.Texture0);
+            throw new Exception("The Program was null or of the wrong type");
         }
+
+        // shader binding
+        uint ProgramID = ((GLGPUProgram)program).ProgramID;
+        OpenGL.UseProgram(ProgramID);
 
     }
 
