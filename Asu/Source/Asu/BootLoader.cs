@@ -22,6 +22,8 @@ public static class BootLoader
             layout (location = 2) in vec3 aNormal;
 
             uniform mat4 uModel;
+            uniform mat4 uView;
+            uniform mat4 uProjection;
 
             // Add an output variable to pass the texture coordinate to the fragment shader
             // This variable stores the data that we want to be received by the fragment
@@ -30,15 +32,15 @@ public static class BootLoader
 
             void main()
             {  
-                gl_Position = uModel * vec4(aPosition, 1.0);
+                gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
 
                 // Assigin the texture coordinates without any modification to be recived in the fragment
                 frag_texCoords = aTextureCoord;
-                vec4 transformNormal = normalize(transpose(inverse(uModel))* vec4(aNormal, 1.0));
-                frag_normal = vec3(transformNormal.x, transformNormal.y, transformNormal.z);
+                vec3 transformNormal = normalize(mat3(transpose(inverse(uModel)))* aNormal);
+                frag_normal = transformNormal;
             }
             ";
-    const string fragmentCode = @"
+    const string fragmentCodeA = @"
             #version 330 core
 
             // Receive the input from the vertex shader in an attribute
@@ -60,9 +62,10 @@ public static class BootLoader
                 
                 // lighting
                 float dotProduct = dot(normalize(vec3(1.0, 1.0, -1.0)), normalize(frag_normal));
-                //float productA = (floor(clamp((dotProduct+0.65)*0.6, 0, 1)*6)/5*0.85+0.15)*0.7;
-                float productB = clamp((dotProduct+0.65)*0.6, 0, 1)*1;
-                float productC = productB;
+                float LightAmount = dotProduct*0.8+0.4;
+                float productA = (floor(clamp(LightAmount, 0, 1)*4)/3*0.85+0.15)*0.5;
+                float productB = clamp(LightAmount, 0, 1)*0.5;
+                float productC = productB + productA;
                 float product = productC * sickColors;
 
                 
@@ -71,32 +74,78 @@ public static class BootLoader
                 //out_color = vec4(product, product, product, 1);
             }
             ";
+
+        const string fragmentCodeB = @"
+            #version 330 core
+
+            // Receive the input from the vertex shader in an attribute
+            in vec2 frag_texCoords;
+            in vec3 frag_normal;
+
+            out vec4 out_color;
+
+            uniform sampler2D uTexture;
+            uniform sampler2D uText;
+            uniform float uTime;
+
+            void main()
+            {   
+                // lighting
+                float dotProduct = dot(normalize(vec3(1.0, 1.0, -1.0)), normalize(frag_normal));
+                float LightAmount = dotProduct*0.8+0.4;
+                float productA = (floor(clamp(LightAmount, 0, 1)*4)/3*0.85+0.15)*0.5;
+                float productB = clamp(LightAmount, 0, 1)*0.5;
+                float product = productB + productA;
+                vec3 lighting = vec3(product, product, product);
+                
+                // Texture Maping
+                vec4 textColor = texture(uTexture, frag_texCoords*2);
+
+                // Camera based texture maping
+                vec2 pixPos = vec2(gl_FragCoord) / vec2(1280, 720);
+                vec4 cameraRefrenceColor = texture(uText, (pixPos*vec2(12, -25))+vec2(uTime*0.5, 0));
+
+                // Output
+                vec3 modColor = vec3(textColor.x, textColor.y, textColor.z) * lighting;
+                modColor = modColor * (1 - cameraRefrenceColor.w); 
+                vec3 camColor = vec3(cameraRefrenceColor.x, cameraRefrenceColor.y, cameraRefrenceColor.z);
+                // add multiplication if nessesary
+                out_color = vec4(modColor + camColor, 1); 
+            }
+            ";
     
     
     static GPUTexture GsneOs;
-    static GPUProgram Gprog;
+    static GPUTexture GErrorText;
+    static GPUProgram GprogA;
+    static GPUProgram GprogB;
     static GPUMesh Gmonkey;
+    static GPUMesh Gball;
     static SilkWindow silkInterface;
     static Window window;
     static Texture sneOs;
-    static Shader shader;
+    static Texture ErrorText;
+    static Shader shaderA;
+    static Shader shaderB;
     static RenderInterface renderInterface;
     static string assemblyFolder;
 
     static float time;
-    static Transform transform;
+    static Transform transformA;
+    static Transform transformB;
+    static PrespectiveCamera camera;
 
     public static void Boot()
     {
         assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        silkInterface = new SilkWindow(800, 600, WindowAPI.OpenGL);
+        silkInterface = new SilkWindow(1280, 720, WindowAPI.OpenGL);
         window = silkInterface;
-        window.Width = 1280;
-        window.Height = 720;
         window.Title = "Åsu!!";
 
         sneOs = new Texture { FileData = File.ReadAllBytes(assemblyFolder + "/SneOs.png")};
-        shader = new Shader { VertexShader = vertexCode, FragmentShader = fragmentCode };
+        ErrorText = new Texture { FileData = File.ReadAllBytes(assemblyFolder + "/ErrorText.png")};
+        shaderA = new Shader { VertexShader = vertexCode, FragmentShader = fragmentCodeA };
+        shaderB = new Shader { VertexShader = vertexCode, FragmentShader = fragmentCodeB };
 
         renderInterface = (RenderInterface)silkInterface._SilkRenderInterface;
 
@@ -106,7 +155,12 @@ public static class BootLoader
             return;
         }
 
-        transform = new LocalTransform{ Position = new Vector3(0.5f, 0, 0), Scale = new Vector3(0.5f, 0.5f, 0.5f)};
+        transformA = new LocalTransform{ Position = new Vector3(-1, 0, 0), Scale = new Vector3(0.5f, 0.5f, 0.5f)};
+        transformB = new LocalTransform{ Position = new Vector3(1, 0, 0), Scale = new Vector3(0.8f, 0.8f, 0.8f)};
+        
+        camera = new PrespectiveCamera { location = new LocalTransform { Position = new Vector3(0, 0, -4f), Rotation = Quaternion.Identity, Scale = new Vector3(1f, 1f, 1f) }};
+        camera.SetAspectRatio(720, 1280);
+        //camera.ModifyZoom(90);
 
         renderInterface.RenderLoop.OnLoop += Render;
     }
@@ -116,9 +170,11 @@ public static class BootLoader
     static void LoadRender()
     {
         GsneOs = renderInterface.LoadTexture(sneOs, new TextureProperties());
-        Gprog = renderInterface.LoadShaderProgram(shader);
-        Gprog.SetUniform("uTexture", GsneOs);
+        GErrorText = renderInterface.LoadTexture(ErrorText, new TextureProperties());
+        GprogA = renderInterface.LoadShaderProgram(shaderA);
+        GprogB = renderInterface.LoadShaderProgram(shaderB);
         Gmonkey = renderInterface.LoadMesh(LoadObj(assemblyFolder + @"/Monkey.obj"));
+        Gball = renderInterface.LoadMesh(LoadObj(assemblyFolder + @"/Ball.obj"));
     }
 
     static bool isLoaded = false;
@@ -139,17 +195,31 @@ public static class BootLoader
         isLoaded = true;
 
         float Brightness = 1 - ((float)MathF.Sin(time) *0.5f +0.5f) * 0.8f;
-        Gprog.SetUniform("sickColors", Brightness);
-        transform.Position = new Vector3((float)MathF.Sin(time*1.8346578f), 0, 0);
-        transform.Rotation = new Vector3(0, time, 0);
-        Gprog.SetUniform("uModel", transform.GetTransformMatrix(transform));
-        renderInterface.BindProgram(Gprog);
+        GprogA.SetUniform("sickColors", 1f);
+        //transform.Position = new Vector3((float)MathF.Sin(time*1.8346578f), 0, 0);
+        transformA.Rotation = Quaternion.CreateFromYawPitchRoll(time, 0, 0);
+        //camera.location.Rotation += Quaternion.CreateFromAxisAngle(Vector3.UnitY, 1);
+        GprogA.SetUniform("uModel", transformA.GetTransformMatrix(transformA));
+        GprogA.SetUniform("uProjection", camera.GetProjectionMatrix());
+        GprogA.SetUniform("uView", camera.GetViewMatrix());
+        GprogA.SetUniform("uTexture", GsneOs);
+        renderInterface.BindProgram(GprogA);
         renderInterface.DrawMesh(Gmonkey);
+
+        //transform.Position = new Vector3((float)MathF.Sin(time*1.8346578f), 0, 0);
+        transformB.Rotation = Quaternion.CreateFromYawPitchRoll(time, 0, 0);
+        //camera.location.Rotation += Quaternion.CreateFromAxisAngle(Vector3.UnitY, 1);
+        GprogB.SetUniform("uModel", transformB.GetTransformMatrix(transformB));
+        GprogB.SetUniform("uProjection", camera.GetProjectionMatrix());
+        GprogB.SetUniform("uView", camera.GetViewMatrix());
+        GprogB.SetUniform("uTime", time);
+        GprogB.SetUniform("uTexture", GsneOs);
+        GprogB.SetUniform("uText", GErrorText);
+        renderInterface.BindProgram(GprogB);
+        renderInterface.DrawMesh(Gball);
     }
 
-
     #endregion
-
 
     static Mesh LoadObj(string path)
     {

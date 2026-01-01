@@ -5,26 +5,22 @@ namespace Modedlus.Math3D;
 public interface Transform
 {
     Vector3 Position {get; set;}
-    Vector3 Rotation {get; set;}
+    Quaternion Rotation { get; set;}
     Vector3 Scale {get; set;}
-    Vector3 Forward {get; set;}
-    Vector3 Up {get; set;}
-    Vector3 Right {get; set;}
+    Vector3 Forward {get;}
+    Vector3 Up {get;}
+    Vector3 Right {get;}
 
     public Matrix4x4 GetTransformMatrix(Transform transform)
     {
         return Matrix4x4.CreateScale(transform.Scale) *
-               Matrix4x4.CreateRotationX(transform.Rotation.X) *
-               Matrix4x4.CreateRotationY(transform.Rotation.Y) *
-               Matrix4x4.CreateRotationZ(transform.Rotation.Z) *
+                Matrix4x4.CreateFromQuaternion(Rotation) *
                Matrix4x4.CreateTranslation(transform.Position);
     } 
 
     public Matrix4x4 GetRotationMatrix()
     {
-        return Matrix4x4.CreateRotationX(Rotation.X) *
-               Matrix4x4.CreateRotationY(Rotation.Y) *
-               Matrix4x4.CreateRotationZ(Rotation.Z);
+        return Matrix4x4.CreateFromQuaternion(Rotation);
     }
 
     public Matrix4x4 GetScaleMatrix()

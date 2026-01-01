@@ -25,7 +25,7 @@ public class SilkWindow : Modedlus.Systems.WindowInterface.Window, IDisposable
         {
             Size = new Vector2D<int>(_Width, _Height),
             Title = "Modedlus Aplication",
-            FramesPerSecond = 500,
+            FramesPerSecond = 120,
             UpdatesPerSecond = 1,
             WindowBorder = WindowBorder.Resizable,
 

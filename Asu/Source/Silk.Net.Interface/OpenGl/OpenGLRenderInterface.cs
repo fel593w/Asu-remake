@@ -36,12 +36,12 @@ public class OpenGLRenderInterface :SilkRenderInterface, RenderInterface
         OpenGL = iwindow.CreateOpenGL();
 
         OpenGL.Enable(EnableCap.CullFace);
-        OpenGL.CullFace(GLEnum.Front);
+        OpenGL.CullFace(GLEnum.Back);
         OpenGL.Enable(EnableCap.Blend);
         OpenGL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         OpenGL.Enable(EnableCap.DepthTest);
         OpenGL.DepthFunc(DepthFunction.Less);
-        OpenGL.DepthRange(0.0, 1.0);
+        //OpenGL.DepthRange(0.0, 1.0);
 
         // Adds the render update function
         iwindow.Render += Render;
@@ -54,6 +54,7 @@ public class OpenGLRenderInterface :SilkRenderInterface, RenderInterface
         OpenGL.Clear(ClearBufferMask.ColorBufferBit);
         OpenGL.ClearColor(Color.Black);
         OpenGL.Clear(ClearBufferMask.DepthBufferBit);
+        //OpenGL.DrawBuffer
         //OpenGL.Clear(ClearBufferMask.DepthBufferBit);
 
         // Runs the render loop
@@ -98,7 +99,7 @@ public class OpenGLRenderInterface :SilkRenderInterface, RenderInterface
         OpenGL.DrawElements(PrimitiveType.Triangles, (uint)mesh.source.Indices.Length, DrawElementsType.UnsignedInt, null);
         }catch (Exception e){ Console.WriteLine($"FAIL: {e}");}
     }
-
+    
     #endregion
 
 }

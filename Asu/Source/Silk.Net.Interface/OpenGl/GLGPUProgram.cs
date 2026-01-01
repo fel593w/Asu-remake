@@ -66,6 +66,8 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
     {
         //Using the program
         OpenGL.UseProgram(ProgramID);
+
+        // TODO: set textures to be active
     }
 
     public void Dispose()
@@ -138,8 +140,6 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
 
     public int BindTexture(string name, GLGPUTexture texture)
     {
-        Console.WriteLine("Binding texture");
-
         if(texture is null)
             return -1;
         if(!bindedTextures.ContainsKey(name)){
