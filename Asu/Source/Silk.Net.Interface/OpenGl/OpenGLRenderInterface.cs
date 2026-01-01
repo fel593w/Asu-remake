@@ -78,8 +78,8 @@ public class OpenGLRenderInterface :SilkRenderInterface, RenderInterface
         }
 
         // shader binding
-        uint ProgramID = ((GLGPUProgram)program).ProgramID;
-        OpenGL.UseProgram(ProgramID);
+        GLGPUProgram GLProgram = ((GLGPUProgram)program);
+        GLProgram.Bind();
 
     }
 

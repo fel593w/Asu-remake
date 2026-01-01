@@ -175,6 +175,9 @@ public static class BootLoader
         GprogB = renderInterface.LoadShaderProgram(shaderB);
         Gmonkey = renderInterface.LoadMesh(LoadObj(assemblyFolder + @"/Monkey.obj"));
         Gball = renderInterface.LoadMesh(LoadObj(assemblyFolder + @"/Ball.obj"));
+        GprogA.SetUniform("uTexture", GsneOs);
+        GprogB.SetUniform("uTexture", GsneOs);
+        GprogB.SetUniform("uText", GErrorText);
     }
 
     static bool isLoaded = false;
@@ -202,7 +205,6 @@ public static class BootLoader
         GprogA.SetUniform("uModel", transformA.GetTransformMatrix(transformA));
         GprogA.SetUniform("uProjection", camera.GetProjectionMatrix());
         GprogA.SetUniform("uView", camera.GetViewMatrix());
-        GprogA.SetUniform("uTexture", GsneOs);
         renderInterface.BindProgram(GprogA);
         renderInterface.DrawMesh(Gmonkey);
 
@@ -213,8 +215,6 @@ public static class BootLoader
         GprogB.SetUniform("uProjection", camera.GetProjectionMatrix());
         GprogB.SetUniform("uView", camera.GetViewMatrix());
         GprogB.SetUniform("uTime", time);
-        GprogB.SetUniform("uTexture", GsneOs);
-        GprogB.SetUniform("uText", GErrorText);
         renderInterface.BindProgram(GprogB);
         renderInterface.DrawMesh(Gball);
     }

@@ -11,11 +11,14 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
     public Modedlus.Systems.RenderInterface.Shader source { get; private set; }
     
     public uint ProgramID;
+    private bool ErrorMode = false;
     
     public GLGPUProgram(OpenGLRenderInterface GLInterface, Modedlus.Systems.RenderInterface.Shader shader)
     {
         if (GLInterface == null) throw new ArgumentNullException(nameof(GLInterface));
         this.GLInterface = GLInterface;
+
+        try{
 
         //Load the individual shaders.
         
@@ -60,12 +63,29 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
         OpenGL.DetachShader(ProgramID, fragmentShader);
         OpenGL.DeleteShader(vertexShader);
         OpenGL.DeleteShader(fragmentShader);
+        
+        } 
+        catch (Exception e)
+        {
+            Console.WriteLine($"Program with shader {shader} faild {e}");
+            ErrorMode = true;
+            ProgramID = ErrorShader.ErrorProgramId;
+        }
     }
     
     public void Bind()
     {
         //Using the program
         OpenGL.UseProgram(ProgramID);
+
+        // Set Active Textures
+        foreach(string name in bindedTextures.Keys)
+        {
+            if (bindedTextures.TryGetValue(name, out ProgramTexture textureInfo))
+            {
+                textureInfo.Texture.Bind(TextureUnit.Texture0 + textureInfo.Slot);
+            }
+        }
 
         // TODO: set textures to be active
     }
@@ -76,7 +96,7 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
     }
 
     private Dictionary<string, int> bindedPropetes = new Dictionary<string, int>();
-    private Dictionary<string, int> bindedTextures = new Dictionary<string, int>();
+    private Dictionary<string, ProgramTexture> bindedTextures = new Dictionary<string, ProgramTexture>();
 
     public void SetUniform(string name, float value) => BindPropete(name, value, RenderPropType._float);
     public void SetUniform(string name, int value) => BindPropete(name, value, RenderPropType._int);
@@ -86,6 +106,12 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
 
     public unsafe void BindPropete(string name, object value, RenderPropType type)
     {
+        if (ErrorMode)
+        {
+            Console.WriteLine($"Error adding {name}, the program is in error mode");
+            return;
+        }
+
         OpenGL.UseProgram(ProgramID);
 
         if (value is null || type is RenderPropType._null)
@@ -131,7 +157,7 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
                     GLGPUTexture texture = (GLGPUTexture)value;
                     int textureLoc = BindTexture(name, texture);
                     if(textureLoc < 0)
-                        throw new Exception("Was unable to bind texture");
+                        throw new Exception($"Was unable to bind texture (Slot Output was: {textureLoc})");
                     OpenGL.Uniform1(slot, textureLoc);
                     break;  
             }
@@ -148,15 +174,30 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
 
             // Succsesfull
             Console.WriteLine($"Creating new texture {name} with slot {location}");
-            bindedTextures.Add(name, location);
+            bindedTextures.Add(name, new ProgramTexture(texture, location));
+
+            return location;
         }
 
-        if (bindedTextures.TryGetValue(name, out int slot))
+        if (bindedTextures.TryGetValue(name, out ProgramTexture textureInfo))
         {
-            texture.Bind(TextureUnit.Texture0 + slot);
-            return slot;
+            // textureInfo.Texture.Bind(TextureUnit.Texture0 + textureInfo.Slot);
+            return textureInfo.Slot;
         }
 
         return -2;
     }
+}
+
+struct ProgramTexture
+{
+    public ProgramTexture(GLGPUTexture texture, int slot)
+    {
+        Texture = texture;
+        Slot = slot;
+    }
+
+    public GLGPUTexture Texture;
+    public int Slot;
+
 }
