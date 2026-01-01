@@ -20,6 +20,4 @@ public class GLGPUDynamicMesh : GLGPUComonMeshObject, GPUDynamicMesh, GPUMesh
         throw new NotImplementedException();
         this.GLInterface = GLInterface;
     }
-
-
 }

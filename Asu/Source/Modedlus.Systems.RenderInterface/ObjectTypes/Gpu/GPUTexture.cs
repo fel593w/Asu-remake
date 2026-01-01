@@ -1,6 +1,6 @@
 namespace Modedlus.Systems.RenderInterface;
 
-public interface GPUTexture
+public interface GPUTexture : IDisposable
 {
     /// <summary>
     /// Stores the texture witch is loaded form

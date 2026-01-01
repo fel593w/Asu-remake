@@ -28,7 +28,7 @@ public class OpenGLRenderInterface :SilkRenderInterface, RenderInterface
 
     public OpenGLRenderInterface(IWindow iwindow)
     {
-
+        Console.WriteLine($"Creating Render Interface");
         //Setup
         RenderLoop = new RenderLoop();
 

@@ -55,6 +55,8 @@ public class GLGPUMesh : GLGPUComonMeshObject, GPUMesh
     
         OpenGL.BindVertexArray(0);
         OpenGL.BindBuffer(BufferTargetARB.ArrayBuffer, 0);
+
+        Console.WriteLine($"Created Mesh binded to {Vao} (Vertex: {Vbo} Indeces: {Ebo})");
     
     }
 

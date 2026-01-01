@@ -1,6 +1,6 @@
 namespace Modedlus.Systems.RenderInterface;
 
-public interface GPUDynamicMesh
+public interface GPUDynamicMesh : IDisposable
 {
     /// <summary>
     /// Stores the mesh witch is loaded form

@@ -63,6 +63,8 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
         OpenGL.DetachShader(ProgramID, fragmentShader);
         OpenGL.DeleteShader(vertexShader);
         OpenGL.DeleteShader(fragmentShader);
+
+        Console.WriteLine($"Created Program binded to {ProgramID}");
         
         } 
         catch (Exception e)
@@ -93,6 +95,7 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
     public void Dispose()
     {
         // Dispose logic here
+        OpenGL.DeleteProgram(ProgramID);
     }
 
     private Dictionary<string, int> bindedPropetes = new Dictionary<string, int>();

@@ -2,7 +2,7 @@ using System.Numerics;
 
 namespace Modedlus.Systems.RenderInterface;
 
-public interface GPUProgram
+public interface GPUProgram : IDisposable
 {
     /// <summary>
     /// Stores the shader witch is loaded form

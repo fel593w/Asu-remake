@@ -49,6 +49,8 @@ public class GLGPUTexture : GLGPUObjectBase, IDisposable, GPUTexture
         OpenGL.TexParameter(GLEnum.Texture2D, GLEnum.TextureMagFilter, (int)TextureMagFilter.Nearest);
 
         OpenGL.GenerateMipmap(TextureTarget.Texture2D);
+
+        Console.WriteLine($"Created Texture binded to {Handel}");
     }
     
     public void Bind(TextureUnit textureSlot = TextureUnit.Texture0)
