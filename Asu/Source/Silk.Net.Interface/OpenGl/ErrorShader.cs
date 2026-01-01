@@ -1,9 +1,10 @@
 using Silk.Net.Interface.OpenGl;
 using Silk.NET.OpenGL;
+using StbImageSharp;
 
 public static class ErrorShader
 {
-        const string vertexCode = @"
+    const string vertexCode = @"
             #version 330 core
 
             layout (location = 0) in vec3 aPosition;
@@ -32,7 +33,7 @@ public static class ErrorShader
             }
             ";
 
-        const string fragmentCode = @"
+    const string fragmentCode = @"
             #version 330 core
 
             // Receive the input from the vertex shader in an attribute
@@ -41,29 +42,16 @@ public static class ErrorShader
 
             out vec4 out_color;
 
-            uniform sampler2D uTexture;
             uniform sampler2D uText;
-            uniform float uTime;
 
             void main()
             {   
-                // lighting
-                float dotProduct = dot(normalize(vec3(1.0, 1.0, -1.0)), normalize(frag_normal));
-                float LightAmount = dotProduct*0.8+0.4;
-                float productA = (floor(clamp(LightAmount, 0, 1)*4)/3*0.85+0.15)*0.5;
-                float productB = clamp(LightAmount, 0, 1)*0.5;
-                float product = productB + productA;
-                vec3 lighting = vec3(product, product, product);
-                
-                // Texture Maping
-                vec4 textColor = texture(uTexture, frag_texCoords*2);
-
                 // Camera based texture maping
                 vec2 pixPos = vec2(gl_FragCoord) / vec2(1280, 720);
-                vec4 cameraRefrenceColor = texture(uText, (pixPos*vec2(12, -25))+vec2(uTime*0.5, 0));
+                vec4 cameraRefrenceColor = texture(uText, (pixPos*vec2(12, -25)));
 
                 // Output
-                vec3 modColor = vec3(textColor.x, textColor.y, textColor.z) * lighting;
+                vec3 modColor = vec3(0.7, 0, 1);
                 modColor = modColor * (1 - cameraRefrenceColor.w); 
                 vec3 camColor = vec3(cameraRefrenceColor.x, cameraRefrenceColor.y, cameraRefrenceColor.z);
                 // add multiplication if nessesary
@@ -71,12 +59,18 @@ public static class ErrorShader
             }
             ";
 
-    public static void Compile(GL OpenGL)
+    private static  uint vertexShader;
+    private static uint fragmentShader;
+
+    private static uint errorTextTexture;
+    private static bool errorTextLoaded = false;
+
+    public static unsafe void Compile(GL OpenGL)
     {
+        Console.WriteLine("Compiling \"Error Shaders\"");
 
         // Shader Compilation
-
-        uint vertexShader = OpenGL.CreateShader(ShaderType.VertexShader);
+        vertexShader = OpenGL.CreateShader(ShaderType.VertexShader);
         OpenGL.ShaderSource(vertexShader, vertexCode);
 
         OpenGL.CompileShader(vertexShader);
@@ -85,7 +79,7 @@ public static class ErrorShader
         if (vStatus != (int) GLEnum.True)
             throw new Exception("Vertex shader failed to compile: " + OpenGL.GetShaderInfoLog(vertexShader));
 
-        uint fragmentShader = OpenGL.CreateShader(ShaderType.FragmentShader);
+        fragmentShader = OpenGL.CreateShader(ShaderType.FragmentShader);
         OpenGL.ShaderSource(fragmentShader, fragmentCode);
         
         OpenGL.CompileShader(fragmentShader);
@@ -94,7 +88,39 @@ public static class ErrorShader
         if (fStatus != (int) GLEnum.True)
             throw new Exception("Fragment shader failed to compile: " + OpenGL.GetShaderInfoLog(fragmentShader));
 
-        ErrorProgramId = OpenGL.CreateProgram();
+        Console.WriteLine("Compiled \"Error Shaders\"");
+
+        Console.WriteLine("Trying To Load \"Error Show Texture\"");
+
+        try
+        {
+            errorTextTexture = OpenGL.GenTexture();
+            OpenGL.ActiveTexture(TextureUnit.Texture0);
+            OpenGL.BindTexture(TextureTarget.Texture2D, errorTextTexture);
+
+            // ImageResult.FromMemory reads the bytes of the .png file and returns all its information!
+            ImageResult result = ImageResult.FromMemory(File.ReadAllBytes("SneOs.png"), ColorComponents.RedGreenBlueAlpha);
+
+            // Define a pointer to the image data
+            fixed (byte* ptr = result.Data)
+                // Here we use "result.Width" and "result.Height" to tell OpenGL about how big our texture is.
+                OpenGL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)result.Width,
+                    (uint)result.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
+
+            errorTextLoaded = true;
+            Console.WriteLine("Loaded \"Error Show Texture\" Succesfully");
+        }catch(Exception e)
+        {
+            Console.WriteLine($"Was Unable to load \"Error Show Texture\" reson: {e}");
+        }
+
+    }
+
+    public static uint GetProgram(GL OpenGL)
+    {
+        Console.WriteLine("Give Error Program");
+
+        uint ErrorProgramId = OpenGL.CreateProgram();
 
         // Program Manegment
 
@@ -107,12 +133,26 @@ public static class ErrorShader
         if (lStatus != (int) GLEnum.True)
             throw new Exception("Program failed to link: " + OpenGL.GetProgramInfoLog(ErrorProgramId));
 
-        OpenGL.DetachShader(ErrorProgramId, vertexShader);
-        OpenGL.DetachShader(ErrorProgramId, fragmentShader);
-        OpenGL.DeleteShader(vertexShader);
-        OpenGL.DeleteShader(fragmentShader);
-    }
 
-    public static uint ErrorProgramId;
+        OpenGL.UseProgram(ErrorProgramId);
+
+        if(errorTextLoaded){
+            Console.WriteLine("Trying To bind \"Error Show Texture\"");
+            try
+            {
+                OpenGL.ActiveTexture(GLEnum.Texture0);
+                OpenGL.BindTexture(TextureTarget.Texture2D, errorTextTexture);
+                int location = OpenGL.GetUniformLocation(ErrorProgramId, "uText");
+                OpenGL.Uniform1(location, 0);
+                Console.WriteLine("Binded \"Error Show Texture\" Succesfully");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Was Unable to bind \"Error Show Texture\"");
+            }
+        }
+
+        return ErrorProgramId;
+    }
     
 }

@@ -69,9 +69,9 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
         } 
         catch (Exception e)
         {
-            Console.WriteLine($"Program with shader {shader} faild {e}");
             ErrorMode = true;
-            ProgramID = ErrorShader.ErrorProgramId;
+            Console.WriteLine($"Error Creating Program: {e} \n with shader {shader}");
+            ProgramID = ErrorShader.GetProgram(OpenGL);
         }
     }
     
@@ -109,61 +109,67 @@ public class GLGPUProgram : GLGPUObjectBase, IDisposable, GPUProgram
 
     public unsafe void BindPropete(string name, object value, RenderPropType type)
     {
-        if (ErrorMode)
-        {
-            Console.WriteLine($"Error adding {name}, the program is in error mode");
-            return;
-        }
+        //if (ErrorMode)
+        //{
+        //    Console.WriteLine($"Error adding {name}, the program is in error mode");
+        //    return;
+        //}
 
-        OpenGL.UseProgram(ProgramID);
+        try {
 
-        if (value is null || type is RenderPropType._null)
-            throw new NullReferenceException();
-        
-        if(!bindedPropetes.ContainsKey(name)){
-            // Creates new slot with the name
-            int location = OpenGL.GetUniformLocation(ProgramID, name);
+            OpenGL.UseProgram(ProgramID);
 
-            // Succsesfull
-            Console.WriteLine($"Creating new uniform {name} with slot {location}");
-            bindedPropetes.Add(name, location);
+            if (value is null || type is RenderPropType._null)
+                throw new NullReferenceException();
 
-            // Checks for valid location
-            if (location == -1)
-                throw new Exception($"{name} uniform not found on shader.");
-        }
+            if(!bindedPropetes.ContainsKey(name)){
+                // Creates new slot with the name
+                int location = OpenGL.GetUniformLocation(ProgramID, name);
 
-        // Set the value
-        if (bindedPropetes.TryGetValue(name, out int slot))
-        {
-            switch (type)
-            {
-                case RenderPropType._float:
-                    OpenGL.Uniform1(slot, (float)value);
-                    break;
+                // Succsesfull
+                Console.WriteLine($"Creating new uniform {name} with slot {location}");
+                bindedPropetes.Add(name, location);
 
-                case RenderPropType._int:
-                    OpenGL.Uniform1(slot, (int)value);
-                    break;
-
-                case RenderPropType._M4x4:
-                    Matrix4x4 matrix4X4 = (Matrix4x4)value;
-                    OpenGL.UniformMatrix4(slot, 1, false, (float*) &matrix4X4);
-                    break;  
-
-                case RenderPropType._M3x2:
-                    Matrix3x2 matrix3X2 = (Matrix3x2)value;
-                    OpenGL.UniformMatrix3x2(slot, 1, false, (float*) &matrix3X2);
-                    break;  
-
-                case RenderPropType._textures:
-                    GLGPUTexture texture = (GLGPUTexture)value;
-                    int textureLoc = BindTexture(name, texture);
-                    if(textureLoc < 0)
-                        throw new Exception($"Was unable to bind texture (Slot Output was: {textureLoc})");
-                    OpenGL.Uniform1(slot, textureLoc);
-                    break;  
+                // Checks for valid location
+                if (location == -1)
+                    throw new Exception($"{name} uniform not found on shader.");
             }
+
+            // Set the value
+            if (bindedPropetes.TryGetValue(name, out int slot))
+            {
+                switch (type)
+                {
+                    case RenderPropType._float:
+                        OpenGL.Uniform1(slot, (float)value);
+                        break;
+
+                    case RenderPropType._int:
+                        OpenGL.Uniform1(slot, (int)value);
+                        break;
+
+                    case RenderPropType._M4x4:
+                        Matrix4x4 matrix4X4 = (Matrix4x4)value;
+                        OpenGL.UniformMatrix4(slot, 1, false, (float*) &matrix4X4);
+                        break;  
+
+                    case RenderPropType._M3x2:
+                        Matrix3x2 matrix3X2 = (Matrix3x2)value;
+                        OpenGL.UniformMatrix3x2(slot, 1, false, (float*) &matrix3X2);
+                        break;  
+
+                    case RenderPropType._textures:
+                        GLGPUTexture texture = (GLGPUTexture)value;
+                        int textureLoc = BindTexture(name, texture);
+                        if(textureLoc < 0)
+                            throw new Exception($"Was unable to bind texture (Slot Output was: {textureLoc})");
+                        OpenGL.Uniform1(slot, textureLoc);
+                        break;  
+                }
+            } 
+        } catch (Exception e)
+        {
+
         }
     }
 

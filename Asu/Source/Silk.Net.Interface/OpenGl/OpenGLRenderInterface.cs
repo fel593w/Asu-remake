@@ -43,6 +43,9 @@ public class OpenGLRenderInterface :SilkRenderInterface, RenderInterface
         OpenGL.DepthFunc(DepthFunction.Less);
         //OpenGL.DepthRange(0.0, 1.0);
 
+        // Error Shader
+        ErrorShader.Compile(OpenGL);
+
         // Adds the render update function
         iwindow.Render += Render;
     }

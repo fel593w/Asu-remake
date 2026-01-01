@@ -97,14 +97,14 @@ public static class BootLoader
                 float productB = clamp(LightAmount, 0, 1)*0.5;
                 float product = productB + productA;
                 vec3 lighting = vec3(product, product, product);
-                
+                fdg
                 // Texture Maping
                 vec4 textColor = texture(uTexture, frag_texCoords*2);
 
                 // Camera based texture maping
                 vec2 pixPos = vec2(gl_FragCoord) / vec2(1280, 720);
                 vec4 cameraRefrenceColor = texture(uText, (pixPos*vec2(12, -25))+vec2(uTime*0.5, 0));
-
+                vec3 = dhjsg;
                 // Output
                 vec3 modColor = vec3(textColor.x, textColor.y, textColor.z) * lighting;
                 modColor = modColor * (1 - cameraRefrenceColor.w); 

@@ -5,7 +5,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <VersionPrefix>0.0.472</VersionPrefix>
+    <VersionPrefix>0.0.493</VersionPrefix>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks> 
   </PropertyGroup>
   
