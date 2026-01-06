@@ -97,14 +97,13 @@ public static class BootLoader
                 float productB = clamp(LightAmount, 0, 1)*0.5;
                 float product = productB + productA;
                 vec3 lighting = vec3(product, product, product);
-                fdg
+                
                 // Texture Maping
                 vec4 textColor = texture(uTexture, frag_texCoords*2);
 
                 // Camera based texture maping
                 vec2 pixPos = vec2(gl_FragCoord) / vec2(1280, 720);
                 vec4 cameraRefrenceColor = texture(uText, (pixPos*vec2(12, -25))+vec2(uTime*0.5, 0));
-                vec3 = dhjsg;
                 // Output
                 vec3 modColor = vec3(textColor.x, textColor.y, textColor.z) * lighting;
                 modColor = modColor * (1 - cameraRefrenceColor.w); 
@@ -119,6 +118,8 @@ public static class BootLoader
     static GPUTexture GErrorText;
     static GPUProgram GprogA;
     static GPUProgram GprogB;
+    static GPUShader GshadeA;
+    static GPUShader GshadeB;
     static GPUMesh Gmonkey;
     static GPUMesh Gball;
     static SilkWindow silkInterface;
@@ -137,13 +138,20 @@ public static class BootLoader
 
     public static void Boot()
     {
-        assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        Console.WriteLine("BOOTING");
+
+        assemblyFolder = AppDomain.CurrentDomain.BaseDirectory;
+        Console.WriteLine("Assembly Folder: " + assemblyFolder);
         silkInterface = new SilkWindow(1280, 720, WindowAPI.OpenGL);
         window = silkInterface;
         window.Title = "Åsu!!";
 
-        sneOs = new Texture { FileData = File.ReadAllBytes(assemblyFolder + "/SneOs.png")};
-        ErrorText = new Texture { FileData = File.ReadAllBytes(assemblyFolder + "/ErrorText.png")};
+        Console.WriteLine("Loading Resources");
+        Console.WriteLine("Loading: " + File.ReadAllBytes(assemblyFolder + @"Resources/SneOs.png"));
+        sneOs = new Texture { FileData = File.ReadAllBytes(assemblyFolder + @"Resources/SneOs.png")};
+        Console.WriteLine("Loading: " + assemblyFolder + @"Resources/ErrorText.png");
+        ErrorText = new Texture { FileData = File.ReadAllBytes(assemblyFolder + @"Resources/ErrorText.png")};
+        
         shaderA = new Shader { VertexShader = vertexCode, FragmentShader = fragmentCodeA };
         shaderB = new Shader { VertexShader = vertexCode, FragmentShader = fragmentCodeB };
 
@@ -171,10 +179,12 @@ public static class BootLoader
     {
         GsneOs = renderInterface.LoadTexture(sneOs, new TextureProperties());
         GErrorText = renderInterface.LoadTexture(ErrorText, new TextureProperties());
-        GprogA = renderInterface.LoadShaderProgram(shaderA);
-        GprogB = renderInterface.LoadShaderProgram(shaderB);
-        Gmonkey = renderInterface.LoadMesh(LoadObj(assemblyFolder + @"/Monkey.obj"));
-        Gball = renderInterface.LoadMesh(LoadObj(assemblyFolder + @"/Ball.obj"));
+        GshadeA = renderInterface.LoadShader(shaderA);
+        GshadeB = renderInterface.LoadShader(shaderB);
+        GprogA = renderInterface.LoadProgram(GshadeA);
+        GprogB = renderInterface.LoadProgram(GshadeB);
+        Gmonkey = renderInterface.LoadMesh(LoadObj(assemblyFolder + @"Resources/Monkey.obj"));
+        Gball = renderInterface.LoadMesh(LoadObj(assemblyFolder + @"Resources/Ball.obj"));
         GprogA.SetUniform("uTexture", GsneOs);
         GprogB.SetUniform("uTexture", GsneOs);
         GprogB.SetUniform("uText", GErrorText);

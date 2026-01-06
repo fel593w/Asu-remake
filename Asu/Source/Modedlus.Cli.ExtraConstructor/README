@@ -1,5 +1,0 @@
-copy the "PluginExampel" and rename it to the plugin name
-then run the "Create.sh" file or the "Create.bat" file
-after that run the "Build.sh" file or the "Build.bat" file to run the program
-
-you can also turn off auto version update if you want to by disabeling the updater
