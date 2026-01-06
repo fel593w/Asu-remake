@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v10.0": {
-      "Asu/0.0.493": {
+      "Asu/0.0.494": {
         "dependencies": {
           "Asu.Piano": "0.0.9",
           "Modedlus.Systems.WindowInterface": "0.0.8",
@@ -786,7 +786,7 @@
     }
   },
   "libraries": {
-    "Asu/0.0.493": {
+    "Asu/0.0.494": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

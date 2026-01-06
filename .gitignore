@@ -22,6 +22,8 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+Packages/
+ProjectTemplate/
 
 # .NET Core
 project.lock.json
@@ -41,6 +43,17 @@ ScaffoldingReadMe.txt
 *~
 CodeCoverage/
 
+# Backups
+*.blend1
+*.bak
+
+# Visual Studio
+*.sln
+*.vcproj
+*.vcxproj
+*.slnx
+*.slnf
+
 # MSBuild Binary and Structured Log
 *.binlog
 
@@ -52,3 +65,6 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Builds
+Builds/
